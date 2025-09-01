@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Communication Skills • Exam Prep MCQs (Lectures 1–10)</title>
+  <style>
+    :root{
+      --bg:#0b0e14; --card:#121826; --muted:#7d8aa2; --text:#e8edf7; --accent:#7c5cff; --ok:#26c281; --bad:#ff5c5c; --ring:rgba(124,92,255,.35);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#0b0e14 0%,#0f1421 100%);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+    .wrap{max-width:1000px;margin:auto;padding:24px}
+    header{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+    h1{font-size:clamp(20px,4vw,32px);margin:0}
+    .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;width:100%;margin-top:12px}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px}
+    select,button,input[type=number]{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:#0f1421;color:var(--text);outline:none}
+    select:focus,button:focus{box-shadow:0 0 0 4px var(--ring)}
+    button{cursor:pointer;background:var(--accent);border:none;font-weight:600}
+    button.secondary{background:#1b2234}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,.15)}
+    button[disabled]{opacity:.5;cursor:not-allowed}
+    label{font-size:13px;color:var(--muted)}
+    .qcard{margin-top:18px}
+    .qtext{font-size:18px;margin:0 0 8px}
+    .meta{font-size:12px;color:var(--muted);margin-bottom:10px}
+    .options{display:grid;gap:10px;margin-top:10px}
+    .opt{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);cursor:pointer;background:#0f1421;transition:transform .06s ease}
+    .opt:hover{transform:translateY(-1px)}
+    .opt.correct{border-color:rgba(38,194,129,.5);background:rgba(38,194,129,.1)}
+    .opt.wrong{border-color:rgba(255,92,92,.5);background:rgba(255,92,92,.08)}
+    .explain{margin-top:12px;color:#c7d2eb;font-size:14px;border-left:3px solid var(--accent);padding-left:10px}
+    .progress{height:10px;border-radius:999px;background:#1a2133;overflow:hidden;margin:16px 0}
+    .bar{height:100%;background:linear-gradient(90deg,var(--accent),#41d1ff);width:0%}
+    .footer{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:12px}
+    .pill{padding:6px 10px;border-radius:999px;background:#1b2234;border:1px solid rgba(255,255,255,.12);font-size:12px;color:var(--muted)}
+    .score{font-weight:700}
+    .grid-2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .hidden{display:none}
+    .summary{margin-top:18px}
+    details{background:#0f1421;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px}
+    summary{cursor:pointer}
+    .tiny{font-size:12px;color:var(--muted)}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#0b0e14;border:1px solid rgba(255,255,255,.12);padding:1px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>ENGL 158 • Communication SKills — MCQ Trainer</h1>
+      <div class="pill">ENGL 158 • Communication Skills II • Letters • Meetings • Writing</div>
+    </header>
+
+    <div class="card controls">
+      
+    <div>
+        <label for="lecture">Filter by topic</label>
+        <select id="lecture">
+        <option value="all">All topics</option>
+        <option value="Letters">Lecture 1 — Letter Writing</option>
+        <option value="Meetings">Lecture 2 — Meetings</option>
+        <option value="Minutes">Lecture 2 — Minutes Writing</option>
+        <option value="CommIntro">Lecture 3 — Introduction to Communication</option>
+        <option value="OralComm">Lecture 4 — Oral Communication</option>
+        <option value="WritingProcess">Lecture 5 — Writing as a Process</option>
+        <!-- You can keep adding more as we process the rest of your slides -->
+        </select>
+    </div>
+
+      <div>
+        <label for="amount">Number of questions</label>
+        <select id="amount">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="40">40</option>
+          <option value="80">80</option>
+          <option value="all">All available</option>
+        </select>
+      </div>
+      <div>
+        <label for="mode">Mode</label>
+        <select id="mode">
+          <option value="exam">Exam (no answers until you submit)</option>
+          <option value="study" selected>Study (instant feedback)</option>
+        </select>
+      </div>
+      <div>
+        <label for="shuffle">Order</label>
+        <select id="shuffle">
+          <option value="shuffled" selected>Randomized</option>
+          <option value="sequential">Sequential</option>
+        </select>
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button id="start">Start Quiz</button>
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button id="resume" class="secondary">Resume Last Session</button>
+      </div>
+    </div>
+
+    <div id="quiz" class="card hidden">
+      <div class="meta" id="meta"></div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div id="qbox" class="qcard"></div>
+      <div class="footer">
+        <div class="pill"><span id="tracker">0 / 0</span></div>
+        <div style="display:flex;gap:8px">
+          <button id="prev" class="ghost">Prev</button>
+          <button id="next">Next</button>
+          <button id="end" class="secondary">Finish</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="result" class="card hidden"></div>
+
+    <p class="tiny">Tip: press <span class="kbd">1</span>–<span class="kbd">4</span> to answer quickly. Your progress autosaves.</p>
+  </div>
+
+<script>
+// === Question bank ==========================================================
+const QUESTIONS = [
+  // Formal Letter Basics
+  {id:201, lec:'Letters', topic:'Intro', q:'What is the main purpose of a formal letter?', 
+   opts:['To communicate informally with friends','For official or business purposes','For creative writing','For social networking'], 
+   a:1, e:'Formal letters are written for official or business purposes, such as employment or organizational communication.'},
+
+  {id:202, lec:'Letters', topic:'Types', q:'Which of the following is NOT an example of a formal letter?', 
+   opts:['Letter of application','Letter to the press','Letter to a friend','Appointment letter'], 
+   a:2, e:'A personal letter to a friend is informal, not formal.'},
+
+  // Features
+  {id:203, lec:'Letters', topic:'Structure', q:'Which of the following is NOT listed as a part of a formal letter?', 
+   opts:['Writer’s Address','Date','Recipient’s Address','Poem at the end'], 
+   a:3, e:'Poems or creative endings are not part of a formal letter.'},
+
+  // Writer’s Address
+  {id:204, lec:'Letters', topic:'Writer’s Address', q:'Which of these should NOT appear in the writer’s address?', 
+   opts:['Street name','P.O. Box','Institution name','Writer’s personal name'], 
+   a:3, e:'The writer’s personal name appears in the subscription, not in the address.'},
+
+  {id:205, lec:'Letters', topic:'Writer’s Address', q:'When using a “Care of (C/o)” address, who receives the letter?', 
+   opts:['The Post Office','The addressee’s neighbor','The person named after C/o','The institution’s head'], 
+   a:2, e:'The person named after C/o (e.g., Mr. Johnson) will receive the letter on behalf of the writer.'},
+
+  // Recipient’s Address
+  {id:206, lec:'Letters', topic:'Recipient’s Address', q:'A letter addressed to “The Chief Administrative Officer” is considered:', 
+   opts:['Personal to that officer only','Property of the institution','Not valid','A casual address'], 
+   a:1, e:'Letters addressed by designation are considered the property of the institution.'},
+
+  {id:207, lec:'Letters', topic:'Recipient’s Address', q:'The notation “CC” at the end of a letter stands for:', 
+   opts:['Carbon Copy/Courtesy Copy','Chief Correspondent','Closed Copy','Corporate Communication'], 
+   a:0, e:'“CC” means Carbon Copy or Courtesy Copy, used for copy recipients.'},
+
+  {id:208, lec:'Letters', topic:'Recipient’s Address', q:'The notation “Attn:” before a designation means:', 
+   opts:['The person must be copied','The person is a temporary recipient','The person is expected to carry out duties related to the letter','The letter is private'], 
+   a:2, e:'“Attention” recipients are expected to act on the content of the letter.'},
+
+  // Salutation
+  {id:209, lec:'Letters', topic:'Salutation', q:'Which is the correct form of salutation when the recipient’s gender is unknown?', 
+   opts:['Dear Friend,','Hello,','Dear Sir/Madam,','Hi there,'], 
+   a:2, e:'When gender is unknown, “Dear Sir/Madam,” may be used, though it is best avoided if possible.'},
+
+  // Heading
+  {id:210, lec:'Letters', topic:'Heading', q:'Which of the following is correct for a letter heading?', 
+   opts:['It should be a full sentence with a period.','It should be a phrase without punctuation.','It must include the writer’s name.','It should be poetic.'], 
+   a:1, e:'Headings should be short phrases without punctuation.'},
+
+  // Body
+  {id:211, lec:'Letters', topic:'Body', q:'In the introduction of a formal letter, one should:', 
+   opts:['Begin with jokes','Provide a gist of the subject matter directly','Start with long pleasantries','Write unrelated stories'], 
+   a:1, e:'The introduction should briefly state the purpose of the letter.'},
+
+  {id:212, lec:'Letters', topic:'Body', q:'In an application letter, what is typically attached?', 
+   opts:['Poems','Curriculum Vitae (CV)','Passport copy only','Greeting card'], 
+   a:1, e:'Application letters often include a CV as an attachment.'},
+
+  {id:213, lec:'Letters', topic:'Body', q:'A conclusion that expresses hope of being considered is called:', 
+   opts:['Statement of Hope','Statement of Attachment','Subscription','Salutation'], 
+   a:0, e:'Statements of Hope express the applicant’s wish to be considered.'},
+
+  // Subscription
+  {id:214, lec:'Letters', topic:'Subscription', q:'“Yours faithfully,” is generally used when:', 
+   opts:['You know the recipient personally','The recipient is unknown or addressed by designation','The letter is informal','You are writing poetry'], 
+   a:1, e:'“Yours faithfully,” is used when the recipient is not personally known.'},
+
+  {id:215, lec:'Letters', topic:'Subscription', q:'Why is the writer’s signature important?', 
+   opts:['It looks nice','It is a legal symbol to identify the writer','It decorates the letter','It can be omitted'], 
+   a:1, e:'The signature authenticates the letter and prevents impersonation.'},
+
+  // Language & Style
+  {id:216, lec:'Letters', topic:'Language & Style', q:'Which of the following is NOT acceptable in a formal letter?', 
+   opts:['Strict precision','Politeness','Contracted forms like “don’t”','Full forms of words'], 
+   a:2, e:'Contracted forms are to be avoided; full forms should be used.'},
+
+  {id:217, lec:'Letters', topic:'Language & Style', q:'The slides advise against closing phrases like:', 
+   opts:['I respectfully apply','I humbly hope','Thanking you in advance','Attached are my documents'], 
+   a:2, e:'Phrases like “Thanking you in advance” are discouraged.'},
+   // Meetings Basics
+  {id:301, lec:'Meetings', topic:'Definition', q:'A meeting is generally defined as:', 
+   opts:['An informal chat between friends','A formal interaction with some level of order and strictness','A short break at work','A group lunch'], 
+   a:1, e:'A meeting is a formal interaction — social, occupational, business, or political — with order and strictness.'},
+
+  {id:302, lec:'Meetings', topic:'Purpose', q:'Which of the following is NOT a purpose of meetings?', 
+   opts:['Appropriate behavior and order','Adherence to agenda','Making binding decisions','Entertaining guests'], 
+   a:3, e:'Meetings are for order, agenda, and decisions, not entertainment.'},
+
+  // Types of Meetings
+  {id:303, lec:'Meetings', topic:'Types', q:'Which meeting must be held annually to assess management?', 
+   opts:['Board meeting','Statutory meeting','Annual General Meeting','Informal meeting'], 
+   a:2, e:'An Annual General Meeting (AGM) is held every year to review management.'},
+
+  {id:304, lec:'Meetings', topic:'Types', q:'Which meeting is required by law for directors and shareholders to consider special reports?', 
+   opts:['Board meeting','Statutory meeting','AGM','Informal meeting'], 
+   a:1, e:'Statutory meetings are required by law for directors and shareholders.'},
+
+  {id:305, lec:'Meetings', topic:'Types', q:'Which type of meeting does NOT require strict rules, agenda, or minutes?', 
+   opts:['Formal meeting','Informal meeting','Board meeting','Statutory meeting'], 
+   a:1, e:'Informal meetings, such as brainstorming sessions, may not need minutes.'},
+
+  // Notice of Meeting
+  {id:306, lec:'Meetings', topic:'Notice', q:'Which is NOT a requirement for a proper notice of meeting?', 
+   opts:['Proper authority','Organization name','Agenda or purpose','Lengthy personal stories'], 
+   a:3, e:'A notice must be authorized and state details like date, time, purpose—not personal stories.'},
+
+  {id:307, lec:'Meetings', topic:'Notice', q:'Who usually signs a notice of meeting?', 
+   opts:['Chairperson','Secretary/Convener','Any member','A guest speaker'], 
+   a:1, e:'The secretary or convener signs the notice of meeting.'},
+
+  // Agenda
+  {id:308, lec:'Meetings', topic:'Agenda', q:'The agenda of a meeting is also called:', 
+   opts:['Minutes','Business or Order of Business','Notice','Motion'], 
+   a:1, e:'Agenda is also called “business” or “order of business.”'},
+
+  {id:309, lec:'Meetings', topic:'Agenda', q:'Who prepares the agenda?', 
+   opts:['Chairperson alone','Secretary in consultation with Chairperson','Treasurer','Any member'], 
+   a:1, e:'The secretary prepares it with the chairperson’s approval.'},
+
+  // Terminologies
+  {id:310, lec:'Meetings', topic:'Terminology', q:'A proposed modification to a motion is called:', 
+   opts:['Point of Order','Amendment','Resolution','Quorum'], 
+   a:1, e:'An amendment modifies a motion without changing its general thrust.'},
+
+  {id:311, lec:'Meetings', topic:'Terminology', q:'The minimum number of people required to conduct business is:', 
+   opts:['Motion','Quorum','Point of Information','Out of Order'], 
+   a:1, e:'A quorum is the minimum number needed for valid decisions.'},
+
+  {id:312, lec:'Meetings', topic:'Terminology', q:'When a member interrupts to correct meeting procedure, it is called:', 
+   opts:['Out of Order','Point of Information','Point of Order','Amendment'], 
+   a:2, e:'A Point of Order is raised to correct meeting procedure.'},
+
+  // Minutes Basics
+  {id:313, lec:'Minutes', topic:'Definition', q:'Minutes are primarily concerned with:', 
+   opts:['Events and activities','Discussions and decisions in meetings','Financial audits','Ceremonies'], 
+   a:1, e:'Minutes record discussions and decisions, not general events.'},
+
+  {id:314, lec:'Minutes', topic:'Types', q:'Which type of minutes records contributions, discussions, and vetoes in detail?', 
+   opts:['Narrative minutes','Resolution minutes','Action minutes','Summary minutes'], 
+   a:0, e:'Narrative minutes provide detailed accounts of contributions and decisions.'},
+
+  {id:315, lec:'Minutes', topic:'Types', q:'Which type of minutes focuses only on decisions taken?', 
+   opts:['Narrative minutes','Resolution minutes','Action minutes','Descriptive minutes'], 
+   a:1, e:'Resolution minutes record only decisions reached.'},
+
+  {id:316, lec:'Minutes', topic:'Types', q:'Which type of minutes emphasizes implementation and responsible persons?', 
+   opts:['Resolution minutes','Action minutes','Narrative minutes','Briefing minutes'], 
+   a:1, e:'Action minutes specify who executes decisions, timelines, and methods.'},
+
+  // Structure of Minutes
+  {id:317, lec:'Minutes', topic:'Structure', q:'Which of these is NOT usually a part of minutes structure?', 
+   opts:['Title','Attendance','Poem','Any Other Business'], 
+   a:2, e:'A poem is not part of minutes; standard items include title, attendance, main business, etc.'},
+
+  {id:318, lec:'Minutes', topic:'Attendance', q:'Which group in attendance is NOT entitled to vote or participate in decisions?', 
+   opts:['Members present','Members absent with apology','Members absent','Members in attendance (observers)'], 
+   a:3, e:'Members in attendance may observe but cannot vote or decide.'},
+
+  // Language of Minutes
+  {id:319, lec:'Minutes', topic:'Language', q:'Which tense is most appropriate for minutes writing?', 
+   opts:['Present','Future','Past','Continuous'], 
+   a:2, e:'Minutes are written in the simple past tense since they record past discussions.'},
+
+  {id:320, lec:'Minutes', topic:'Language', q:'Which voice is commonly used in minutes to emphasize group decisions?', 
+   opts:['Active voice','Passive voice','Imperative voice','Interrogative voice'], 
+   a:1, e:'Passive voice emphasizes decisions over individuals.'},
+   // Oral / Verbal Communication
+  {id:321, lec:'Oral Communication', topic:'Definition', q:'Oral communication is primarily defined as:', 
+   opts:['Written exchanges through email','Spoken word, either direct or indirect','Use of gestures only','Graphic illustrations'], 
+   a:1, e:'Oral communication employs spoken word, either direct or indirect, as a communication channel.'},
+
+  {id:322, lec:'Oral Communication', topic:'Examples', q:'Which of the following is NOT an example of oral communication?', 
+   opts:['Class presentation','Telephone conversation','Poetry recital','Poster design'], 
+   a:3, e:'Poster design is written/visual communication, not oral.'},
+
+  // Characteristics of Effective Oral Communication
+  {id:323, lec:'Oral Communication', topic:'Completeness', q:'Completeness in oral communication means:', 
+   opts:['The message is as short as possible','The receiver gets all needed information','The speaker avoids politeness','The presentation is humorous'], 
+   a:1, e:'Completeness ensures the receiver gets all the information needed to act on the message.'},
+
+  {id:324, lec:'Oral Communication', topic:'Conciseness', q:'Conciseness helps oral communication by:', 
+   opts:['Making it polite','Focusing on key points and speeding up understanding','Using more stories and details','Ensuring humor'], 
+   a:1, e:'Conciseness keeps the message to the point, speeding up processing and improving understanding.'},
+
+  {id:325, lec:'Oral Communication', topic:'Concreteness', q:'A concrete message is:', 
+   opts:['Polite but vague','Specific, tangible, vivid, supported with facts','Filled with humor','Always short and incomplete'], 
+   a:1, e:'Concreteness means the message is specific, vivid, and supported by facts and figures.'},
+
+  {id:326, lec:'Oral Communication', topic:'Courtesy', q:'Courtesy in oral communication refers to:', 
+   opts:['Strict adherence to rules','Respecting receiver’s culture, values, and beliefs','Using complex vocabulary','Speaking loudly'], 
+   a:1, e:'Courtesy means crafting a message that is polite and respects the receiver’s values and culture.'},
+
+  {id:327, lec:'Oral Communication', topic:'Clearness', q:'Clearness in oral communication is best achieved by:', 
+   opts:['Using ambiguous terms','Starting with a clear goal and exact language','Adding jokes and anecdotes','Speaking quickly'], 
+   a:1, e:'Clearness requires exact language, concrete words, and a clear goal to avoid ambiguity.'},
+
+  {id:328, lec:'Oral Communication', topic:'Correctness', q:'Correctness in communication emphasizes:', 
+   opts:['Politeness only','Correct grammar and syntax','Short duration','Informality'], 
+   a:1, e:'Correct grammar and syntax guarantee effectiveness and credibility of the message.'},
+
+  {id:329, lec:'Oral Communication', topic:'Consideration', q:'Consideration in oral communication involves:', 
+   opts:['Focusing only on the speaker’s needs','Tailoring the message to audience’s background and viewpoint','Using as many examples as possible regardless of relevance','Avoiding politeness'], 
+   a:1, e:'Consideration means adapting the message to the audience’s background, examples, and expectations.'},
+
+  // Types of Oral Communication
+  {id:330, lec:'Oral Communication', topic:'Types', q:'A recorded podcast is an example of which type of oral communication?', 
+   opts:['Interactive','Partially interactive','Non-interactive','Concreteness'], 
+   a:2, e:'Non-interactive oral communication includes recordings, plays, or recitations without immediate audience feedback.'},
+
+  {id:331, lec:'Oral Communication', topic:'Types', q:'A live presentation where you can read the audience’s faces is:', 
+   opts:['Interactive','Partially interactive','Non-interactive','Written communication'], 
+   a:1, e:'Partially interactive includes speeches or presentations where you can gauge audience comprehension but not always take questions.'},
+
+  // Public Speaking & Stage Fright
+  {id:332, lec:'Public Speaking', topic:'Definition', q:'Stage fright is also known as:', 
+   opts:['Glossophobia','Oral Competence','Aphasia','Verbal Block'], 
+   a:0, e:'Stage fright is also called glossophobia — fear of speaking/performing in public.'},
+
+  {id:333, lec:'Public Speaking', topic:'Symptoms', q:'Which of the following is a psychological symptom of stage fright?', 
+   opts:['Stuttering','Sweating and nausea','Long silence','Running away'], 
+   a:1, e:'Psychological symptoms include sweating, nausea, altered heart rate, etc.'},
+
+  {id:334, lec:'Public Speaking', topic:'Control', q:'Which of the following is NOT a recommended way to control stage fright?', 
+   opts:['Prepare thoroughly','Watch and learn from top performers','Speak very quickly to get it over with','Practice regularly'], 
+   a:2, e:'Speaking quickly worsens nervousness; instead, practice, prepare, and control pace.'},
+
+  // Chairperson’s Remarks
+  {id:335, lec:'Oral Communication', topic:'Chairperson', q:'Chairperson’s opening remarks usually include:', 
+   opts:['Detailed biography of the speaker','Gratitude to guests, event intro, and warm wishes','Technical data presentation','A list of sponsors only'], 
+   a:1, e:'Chairperson greets, thanks guests, introduces event, and prepares minds for the program.'},
+
+  // Vote of Thanks
+  {id:336, lec:'Oral Communication', topic:'Vote of Thanks', q:'A formal vote of thanks should mainly reflect:', 
+   opts:['Humor and jokes','Sincerity and appreciation of speech','Detailed summary of the program','Avoiding mention of the speaker'], 
+   a:1, e:'Vote of thanks must be sincere, appreciating the speech and highlighting key points briefly.'},
+
+  // Proposal of Toast
+  {id:337, lec:'Oral Communication', topic:'Toast', q:'A toast is usually proposed to:', 
+   opts:['Criticize the audience','Wish health, happiness, and success','Make announcements','Avoid public speaking'], 
+   a:1, e:'Toasts are short, wishing health, happiness, and success at occasions like weddings or anniversaries.'},
+
+  // Telephone Conversation
+  {id:338, lec:'Oral Communication', topic:'Telephone', q:'Efficient telephone use requires all EXCEPT:', 
+   opts:['Speaking clearly','Being brief','Smiling when you talk','Answering anonymously'], 
+   a:3, e:'You should never answer anonymously; always identify yourself politely.'},
+
+  // Interviews
+  {id:339, lec:'Interview', topic:'Definition', q:'An interview is best described as:', 
+   opts:['Written test of skills','Conversation where interviewer seeks responses for selection','Debate between two candidates','Casual social talk'], 
+   a:1, e:'An interview is a face-to-face process designed to obtain oral responses to oral inquiries for selection.'},
+
+  {id:340, lec:'Interview', topic:'Types', q:'Which interview type uses probing, open-ended questions with no fixed format?', 
+   opts:['Structured interview','Unstructured interview','Panel interview','Stress interview'], 
+   a:1, e:'Unstructured interviews use open-ended questions without a set structure.'},
+
+  {id:341, lec:'Interview', topic:'Types', q:'Which interview deliberately makes applicants uncomfortable to test tolerance?', 
+   opts:['Behavioral interview','Situational interview','Stress interview','Mass interview'], 
+   a:2, e:'Stress interviews aim to create anxiety to test how applicants respond under stress.'},
+
+  {id:342, lec:'Interview', topic:'Types', q:'A one-on-one interview is considered less threatening because:', 
+   opts:['It is unplanned','It has only one interviewer and one candidate','It uses many panelists','It is conducted by phone'], 
+   a:1, e:'One-on-one interviews involve only one interviewer and candidate, often less intimidating.'},
+
+  {id:343, lec:'Interview', topic:'Preparation', q:'Which of the following is NOT part of preparing for an interview?', 
+   opts:['Researching the company','Bringing required documents','Dressing decently','Arguing with interviewers'], 
+   a:3, e:'Interviewees should never argue with interviewers; preparation involves research, documents, and proper appearance.'},
+
+  {id:344, lec:'Interview', topic:'After Interview', q:'After an interview, candidates should:', 
+   opts:['Forget about it immediately','Do critical self-evaluation and follow-up','Wait silently without reflection','Complain to friends'], 
+   a:1, e:'After an interview, it is important to evaluate your performance and follow up.'},
+   // Intro to Communication Skills II
+  {id:345, lec:'Intro to Communication Skills II', topic:'Class Agreements', q:'Which of the following is NOT typically part of the class agreements?', 
+   opts:['Attendance and punctuality','Mobile phone use','Office hours','Sports participation'], 
+   a:3, e:'Sports participation is not part of class agreements; agreements cover attendance, phones, assessment, etc.'},
+
+  {id:346, lec:'Intro to Communication Skills II', topic:'Course Aim', q:'The main aim of ENGL 158 is to:', 
+   opts:['Focus on literature studies','Introduce students to communication in administrative and business contexts','Teach only oral English','Prepare students for sports commentary'], 
+   a:1, e:'The course focuses on communication practices in administrative and business/technical contexts.'},
+
+  {id:347, lec:'Intro to Communication Skills II', topic:'Course Skills', q:'Which of the following skills is developed in ENGL 158?', 
+   opts:['CV writing','Computer programming','Dance performance','Painting'], 
+   a:0, e:'Students will develop skills such as oral presentation, business/technical writing, and CV development.'},
+
+  // Communication Definition
+  {id:348, lec:'Intro to Communication Skills II', topic:'Definition', q:'Communication is primarily defined as:', 
+   opts:['A one-way message delivery','The process of transmitting and receiving information','Casual chatting only','Physical movement of people'], 
+   a:1, e:'Communication is the process of giving and receiving information to enhance life.'},
+
+  {id:349, lec:'Intro to Communication Skills II', topic:'Key Words', q:'Which of the following is NOT a keyword in the definition of communication?', 
+   opts:['Process','Receiver','Purpose','Competition'], 
+   a:3, e:'Keywords include process, receiver, information, purpose — but not competition.'},
+
+  // Communication as System
+  {id:350, lec:'Intro to Communication Skills II', topic:'System', q:'Communication as a system emphasizes:', 
+   opts:['Only sender and receiver','Complex activities such as number of persons, resources, and activities','Entertainment only','Silence and body movement'], 
+   a:1, e:'Communication as a system includes multiple factors (people, resources, activities) that shape interaction.'},
+
+  // Communication as Process
+  {id:351, lec:'Intro to Communication Skills II', topic:'Process', q:'Communication as a process involves all EXCEPT:', 
+   opts:['Changing roles of speaker and listener','Effect on interlocutors','Movement from start to end','Static and unchanging roles'], 
+   a:3, e:'Communication is dynamic, involving changing roles, emotions, and effects, not static roles.'},
+
+  {id:352, lec:'Intro to Communication Skills II', topic:'Process Elements', q:'In communication, “noise” refers to:', 
+   opts:['Extra background music','Anything that distorts the message such as barriers and distractions','Silence and pause','Only psychological issues'], 
+   a:1, e:'Noise is anything that distorts the message — can be physical, technical, social, or psychological.'},
+
+  // Elements of Communication Process
+  {id:353, lec:'Intro to Communication Skills II', topic:'Elements', q:'Which of the following is the first element of the communication process?', 
+   opts:['Receiver','Source/Sender','Channel','Reaction'], 
+   a:1, e:'Communication begins with a source or sender who initiates the message.'},
+
+  {id:354, lec:'Intro to Communication Skills II', topic:'Channel', q:'Channel in communication includes all EXCEPT:', 
+   opts:['Language choice','Mode (spoken or written)','Formality','Physical appearance'], 
+   a:3, e:'Channels involve packaging/transmission elements such as language, mode, rules, and formality — not mere appearance.'},
+
+  // Effective Communication
+  {id:355, lec:'Intro to Communication Skills II', topic:'Effectiveness', q:'Effective communication is best described as:', 
+   opts:['Message that entertains','Communication that achieves desired goals','One-way delivery only','Message without response'], 
+   a:1, e:'Effective communication occurs when the intended goal is achieved through proper interaction.'},
+
+  {id:356, lec:'Intro to Communication Skills II', topic:'Breakdown', q:'When communication fails to achieve its intended goals, it is called:', 
+   opts:['Communication success','Communication breakdown','Noise filtering','Effective transmission'], 
+   a:1, e:'Failure to achieve intended goals results in a communication breakdown.'},
+
+  // Types of Verbal Communication
+  {id:357, lec:'Intro to Communication Skills II', topic:'Verbal Types', q:'Which type of communication is within oneself?', 
+   opts:['Intrapersonal','Interpersonal','Public','Mass'], 
+   a:0, e:'Intrapersonal communication occurs within oneself.'},
+
+  {id:358, lec:'Intro to Communication Skills II', topic:'Verbal Types', q:'Conversation and question-and-answer fall under:', 
+   opts:['Monolineal forms','Bilineal forms','Multilineal forms','Mass communication'], 
+   a:1, e:'Conversation, Q&A, and similar two-way exchanges are bilineal forms of interpersonal communication.'},
+
+  {id:359, lec:'Intro to Communication Skills II', topic:'Verbal Types', q:'Political debates and convocations are examples of:', 
+   opts:['Intrapersonal','Public multilineal communication','Interpersonal monolineal communication','Non-verbal only'], 
+   a:1, e:'Meetings, debates, and convocations are multilineal forms of public/mass communication.'},
+
+  // Non-Verbal Communication
+  {id:360, lec:'Intro to Communication Skills II', topic:'Non-verbal', q:'The study of space in communication is called:', 
+   opts:['Chronemics','Proxemics','Kinesics','Oculesics'], 
+   a:1, e:'Proxemics is the study of how space and location affect communication.'},
+
+  {id:361, lec:'Intro to Communication Skills II', topic:'Non-verbal', q:'Eye contact as a form of communication is known as:', 
+   opts:['Kinesics','Vocalics','Oculesics','Objectics'], 
+   a:2, e:'Oculesics refers to communication through eye behavior.'},
+
+  {id:362, lec:'Intro to Communication Skills II', topic:'Non-verbal', q:'Tone, pitch, stress, and silence are examples of:', 
+   opts:['Chronemics','Vocalics','Proxemics','Objectics'], 
+   a:1, e:'Vocalics are non-verbal aspects of the voice such as pitch, intonation, stress, and pauses.'},
+
+  // Importance & Goals
+  {id:363, lec:'Intro to Communication Skills II', topic:'Importance', q:'Which of the following is NOT a listed importance of communication?', 
+   opts:['To establish relations','To impart information','To encourage others','To memorize facts only'], 
+   a:3, e:'Memorizing facts is not listed; communication helps share information, build relations, and encourage others.'},
+
+  {id:364, lec:'Intro to Communication Skills II', topic:'Goals', q:'For communication to achieve its goals, the message must have:', 
+   opts:['Credibility, congeniality, confidentiality','Noise, distortion, formality','Length, humor, repetition','Entertainment, fun, jokes'], 
+   a:0, e:'Effective goal-oriented communication requires credibility, congeniality, and confidentiality.'},
+
+  // Barriers
+  {id:365, lec:'Intro to Communication Skills II', topic:'Barriers', q:'Which of the following is a psychological barrier to communication?', 
+   opts:['Technical breakdown','Cultural differences','State of mind/emotions','Physical noise'], 
+   a:2, e:'Psychological noise includes emotional states or mental distractions.'},
+
+  {id:366, lec:'Intro to Communication Skills II', topic:'Barriers', q:'Distortion in communication refers to:', 
+   opts:['Complete silence','Change in meaning making the message untrue','Too much humor','Technical equipment only'], 
+   a:1, e:'Distortion occurs when meaning is altered, making the message inaccurate.'},
+   // Writing as a Process
+  {id:367, lec:'Writing as a Process', topic:'Approaches', q:'Which writing approach reflects what real writers do in real situations and considers writing nonlinear?', 
+   opts:['Product approach','Genre approach','Process approach','Structural approach'], 
+   a:2, e:'The Process Approach sees writing as nonlinear and reflective of real writing situations.'},
+
+  {id:368, lec:'Writing as a Process', topic:'Views', q:'The motto of the process approach is:', 
+   opts:['Writing is easy','Writing is rewriting','Plan once, write once','Drafting is final'], 
+   a:1, e:'The motto of the process approach is “Writing is rewriting.”'},
+
+  {id:369, lec:'Writing as a Process', topic:'Views', q:'According to the process approach, good writers:', 
+   opts:['Write only one draft','Rehearse, plan, revise, and produce multiple drafts','Avoid revision','Do not consider the reader'], 
+   a:1, e:'Good writers plan, revise, rehearse, and produce multiple drafts to ensure clarity.'},
+
+  {id:370, lec:'Writing as a Process', topic:'Emphasis', q:'Which of the following is NOT emphasized in the process approach?', 
+   opts:['Multiple drafts','Revision','Making writing reader-friendly','Avoiding planning'], 
+   a:3, e:'The process approach emphasizes planning, drafts, revision, and audience awareness — not avoiding planning.'},
+
+  {id:371, lec:'Writing as a Process', topic:'Stages', q:'Which is the correct sequence of the stages in the process approach?', 
+   opts:['Planning → Publishing → Editing','Prewriting → Writing → Post-writing','Drafting → Outlining → Publishing','Proofreading → Brainstorming → Writing'], 
+   a:1, e:'The stages are prewriting, writing, and post-writing (editing/proofreading/publishing).'},
+
+  // Prewriting
+  {id:372, lec:'Writing as a Process', topic:'Prewriting', q:'Audience analysis involves considering all EXCEPT:', 
+   opts:['Age','Religion','Favorite sports team','Educational background'], 
+   a:2, e:'Audience analysis considers factors like age, gender, religion, and education, but not sports teams.'},
+
+  {id:373, lec:'Writing as a Process', topic:'Topic Selection', q:'A topic should not be:', 
+   opts:['Too broad or too narrow','Relevant','Based on personal interest','Accessible'], 
+   a:0, e:'A good topic must be relevant and manageable — not too broad or narrow.'},
+
+  {id:374, lec:'Writing as a Process', topic:'Brainstorming', q:'Which of these is NOT a rule of brainstorming?', 
+   opts:['Withhold criticism','Welcome wild ideas','Combine and improve ideas','Focus only on one safe idea'], 
+   a:3, e:'Brainstorming encourages quantity, creativity, and idea building — not sticking to one safe idea.'},
+
+  {id:375, lec:'Writing as a Process', topic:'Clustering', q:'Clustering in prewriting helps to:', 
+   opts:['Correct grammar','Group related ideas together','Replace vague words','Summarize the text'], 
+   a:1, e:'Clustering is a way of narrowing and organizing ideas by grouping related concepts.'},
+
+  {id:376, lec:'Writing as a Process', topic:'Outlining', q:'A formal outline helps to:', 
+   opts:['Skip research','Organize ideas logically','Avoid drafts','Write without structure'], 
+   a:1, e:'Formal outlining arranges main and supporting ideas logically and guides structure.'},
+
+  {id:377, lec:'Writing as a Process', topic:'Outlining', q:'Which of the following is NOT a principle of outlining?', 
+   opts:['Heading','Labeling','Structuring','Random listing'], 
+   a:3, e:'Outlining uses headings, labeling, and structuring — not random lists.'},
+
+  // Writing Stage
+  {id:378, lec:'Writing as a Process', topic:'Writing Stage', q:'During the writing stage, writers should:', 
+   opts:['Only proofread','Draft, revise, and continue making changes','Avoid multiple drafts','Skip feedback'], 
+   a:1, e:'The writing stage involves drafting and revising multiple times.'},
+
+  // Post-writing (Editing/Proofreading)
+  {id:379, lec:'Writing as a Process', topic:'Editing Types', q:'Which is NOT a type of editing?', 
+   opts:['Self-editing','Peer-editing','Group-editing','Audience-editing'], 
+   a:3, e:'Editing types include self, peer, and group — not “audience-editing.”'},
+
+  {id:380, lec:'Writing as a Process', topic:'Editing Focus', q:'Editing for content ensures:', 
+   opts:['Relevance, adequacy, consistency, accuracy','Proper font and spacing','Clarity of grammar','Tone and formality'], 
+   a:0, e:'Content editing checks relevance, adequacy, consistency, and accuracy of ideas.'},
+
+  {id:381, lec:'Writing as a Process', topic:'Editing Focus', q:'Checking for ambiguity, sentence fragments, and awkward constructions belongs to:', 
+   opts:['Editing for clarity','Editing for structure','Editing for formatting','Editing for conciseness'], 
+   a:0, e:'Editing for clarity deals with grammar, sentence correctness, and avoiding ambiguity.'},
+
+  {id:382, lec:'Writing as a Process', topic:'Editing Focus', q:'Margins, font size, and pagination are concerns of:', 
+   opts:['Content editing','Clarity editing','Formatting','Style'], 
+   a:2, e:'Formatting ensures adherence to layout guidelines like font, spacing, and pagination.'},
+
+  {id:383, lec:'Writing as a Process', topic:'Conciseness', q:'Which of the following phrases is redundant and should be avoided?', 
+   opts:['Basic fundamentals','Round in shape','Free gift','All of the above'], 
+   a:3, e:'All listed phrases are redundant examples that should be avoided in concise writing.'},
+
+  {id:384, lec:'Writing as a Process', topic:'Proofreading', q:'Proofreading is mainly concerned with:', 
+   opts:['Surface errors such as spelling, punctuation, and tense','Generating new ideas','Audience analysis','Topic selection'], 
+   a:0, e:'Proofreading checks mechanics like concord, spelling, punctuation, tense, and repetition.'},
+
+  {id:385, lec:'Writing as a Process', topic:'Guidelines', q:'Which is a good guideline for effective editing and proofreading?', 
+   opts:['Do it all at once quickly','Maintain distance from the text and edit in blocks of time','Ignore formatting','Avoid feedback from others'], 
+   a:1, e:'Editing/proofreading works best with breaks, distance from the text, and short focused sessions.'},
+
+
+];
+
+// === State ================================================================
+let state = {
+  order: [], // indices into active questions
+  active: [], // filtered questions
+  index: 0,
+  correct: 0,
+  mode: 'study',
+  answers: {}, // qid -> chosen index
+  revealed: {}, // qid -> true if explanation shown
+  startTime: 0,
+};
+
+// === Utilities ============================================================
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+const shuffle = (arr) => arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
+const fmtTime = (ms)=>{const s=Math.floor(ms/1000),m=Math.floor(s/60),r=s%60;return `${m}m ${r}s`;};
+
+function saveSession(){
+  const payload = {state, ts: Date.now()};
+  localStorage.setItem('dad158_mcq_v1', JSON.stringify(payload));
+}
+function loadSession(){
+  try{const raw=localStorage.getItem('dad158_mcq_v1'); if(!raw) return null; return JSON.parse(raw);}catch(e){return null}
+}
+
+// === Rendering ============================================================
+function buildActive(){
+  const lecSel = $('#lecture').value;
+  let pool = QUESTIONS.filter(q=> lecSel==='all' ? true : String(q.lec)===lecSel);
+  const orderMode = $('#shuffle').value;
+  if(orderMode==='shuffled') pool = shuffle(pool);
+  const amtSel = $('#amount').value;
+  const amount = amtSel==='all' ? pool.length : parseInt(amtSel,10);
+  return pool.slice(0, amount);
+}
+
+function startQuiz(){
+  state.mode = $('#mode').value;
+  state.active = buildActive();
+  state.order = state.active.map((_,i)=>i);
+  state.index = 0;
+  state.correct = 0;
+  state.answers = {};
+  state.revealed = {};
+  state.startTime = Date.now();
+  $('#quiz').classList.remove('hidden');
+  $('#result').classList.add('hidden');
+  renderQuestion();
+  saveSession();
+}
+
+function resumeQuiz(){
+  const saved = loadSession();
+  if(!saved){ alert('No saved session found.'); return; }
+  state = saved.state;
+  $('#quiz').classList.remove('hidden');
+  $('#result').classList.add('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const total = state.active.length;
+  const idx = clamp(state.index, 0, Math.max(0,total-1));
+  state.index = idx;
+  const q = state.active[state.order[idx]];
+  if(!q){ finish(); return; }
+  const bar = $('#bar');
+  bar.style.width = ((idx)/total*100)+'%';
+  $('#tracker').textContent = `${idx+1} / ${total}`;
+  $('#meta').textContent = `Lecture ${q.lec} • ${q.topic}`;
+
+  const chosen = state.answers[q.id];
+  const revealed = state.revealed[q.id];
+
+  const opts = q.opts.map((t,i)=>{
+    const cls = [];
+    if(chosen!==undefined){
+      if(state.mode==='study' || revealed){
+        if(i===q.a) cls.push('correct');
+        if(i===chosen && chosen!==q.a) cls.push('wrong');
+      }
+    }
+    return `<div class="opt ${cls.join(' ')}" data-i="${i}"><strong>${String.fromCharCode(65+i)}.</strong> ${t}</div>`;
+  }).join('');
+
+  const explain = (state.mode==='study' && chosen!==undefined) || revealed
+    ? `<div class="explain">✅ <strong>Answer:</strong> ${String.fromCharCode(65+q.a)} — ${q.opts[q.a]}<br>${q.e}</div>`
+    : '';
+
+  $('#qbox').innerHTML = `
+    <h2 class="qtext">${q.q}</h2>
+    <div class="options">${opts}</div>
+    ${explain}
+  `;
+
+  // Buttons
+  $('#prev').disabled = idx===0;
+  $('#next').disabled = idx>=total-1;
+  $('#end').disabled = false;
+
+  // Keyboard shortcuts 1-4
+  document.onkeydown = (ev)=>{
+    if(['1','2','3','4'].includes(ev.key)){
+      choose(parseInt(ev.key,10)-1);
+    }else if(ev.key==='ArrowRight'){ next(); }
+    else if(ev.key==='ArrowLeft'){ prev(); }
+  };
+
+  // Click handlers
+  $$('#qbox .opt').forEach(el=>{
+    el.onclick = ()=> choose(parseInt(el.dataset.i,10));
+  });
+}
+
+function choose(i){
+  const q = state.active[state.order[state.index]];
+  if(i==null) return;
+  state.answers[q.id] = i;
+  if(state.mode==='study'){
+    if(i===q.a) state.correct += (state.revealed[q.id]?0:1);
+    state.revealed[q.id] = true;
+  }
+  saveSession();
+  renderQuestion();
+}
+
+function next(){ state.index++; renderQuestion(); saveSession(); }
+function prev(){ state.index--; renderQuestion(); saveSession(); }
+
+function finish(){
+  const total = state.active.length;
+  const time = fmtTime(Date.now() - state.startTime);
+
+  // Score calc
+  let correct = 0;
+  state.active.forEach(q=>{ if(state.answers[q.id]===q.a) correct++; });
+  state.correct = correct;
+
+  // Build review
+  let review = '';
+  state.active.forEach((q,idx)=>{
+    const pick = state.answers[q.id];
+    const status = pick===q.a ? '✅ Correct' : (pick==null?'⚠️ Skipped':'❌ Wrong');
+    review += `
+      <details ${pick===q.a?'':'open'}>
+        <summary><strong>Q${idx+1}.</strong> ${q.q} — <em>${status}</em> <span class="tiny">(Lecture ${q.lec} • ${q.topic})</span></summary>
+        <div style="margin-top:8px">
+          <div>• Your answer: <em>${pick==null?'—':String.fromCharCode(65+pick)+'. '+q.opts[pick]}</em></div>
+          <div>• Correct: <strong>${String.fromCharCode(65+q.a)}. ${q.opts[q.a]}</strong></div>
+          <div class="explain" style="border-left:none;padding-left:0;margin-top:8px">${q.e}</div>
+        </div>
+      </details>`;
+  });
+
+  $('#quiz').classList.add('hidden');
+  $('#result').classList.remove('hidden');
+  $('#result').innerHTML = `
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card" style="background:#0f1421">
+        <div class="pill">Mode: ${state.mode==='study'?'Study':'Exam'}</div>
+        <p class="score" style="font-size:28px;margin:6px 0 0">${correct} / ${total}</p>
+        <p class="tiny">Time: ${time}</p>
+        <div class="progress"><div class="bar" style="width:${(correct/total)*100}%"></div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="secondary" onclick="startQuiz()">Retry same settings</button>
+          <button class="ghost" onclick="document.getElementById('result').classList.add('hidden');document.getElementById('quiz').classList.remove('hidden');">Review again</button>
+          <button onclick="localStorage.removeItem('dad158_mcq_v1');location.reload()">New quiz</button>
+        </div>
+      </div>
+      <div class="card" style="background:#0f1421">
+        <h3 style="margin:6px 0 8px">Review</h3>
+        <div class="tiny" style="margin-bottom:8px;color:#9fb0cf">Expand to see explanations and correct answers.</div>
+        <div class="summary">${review}</div>
+      </div>
+    </div>
+  `;
+  saveSession();
+}
+
+// === Events ===============================================================
+$('#start').onclick = startQuiz;
+$('#resume').onclick = resumeQuiz;
+$('#next').onclick = next;
+$('#prev').onclick = prev;
+$('#end').onclick = finish;
+
+// Prefill if a session exists
+(function(){ const saved=loadSession(); if(saved){ $('#resume').disabled=false; } else { $('#resume').disabled=true; }})();
+</script>
+</body>
+</html>
